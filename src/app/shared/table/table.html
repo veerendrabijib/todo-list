@@ -1,0 +1,50 @@
+<div class="overflow-x-auto bg-white rounded-xl shadow">
+ <table class="min-w-full text-sm text-left text-gray-700">
+  <thead class="bg-gray-100">
+   <tr>
+    @for (header of headers(); track header.key) {
+    <th class="px-6 py-3 font-semibold uppercase text-center">
+     <div class="flex items-center justify-center gap-2">
+      @if (header.icon) {
+      <i class="{{ header.icon }}"></i>
+      }
+      {{ header.label }}
+     </div>
+    </th>
+    }
+   </tr>
+  </thead>
+  <tbody>
+   @for (row of data(); track $index) {
+   <tr class="border-b hover:bg-gray-50">
+    @for (header of headers(); track header.key) {
+    <td class="px-6 py-4 text-center">
+     @if (!header.action) {
+     {{ row[header.key] }}
+     }
+     @if (header.action === 'edit') {
+     <i class="fas fa-edit text-blue-600 cursor-pointer hover:text-blue-800" (click)="emitAction('edit', row)">
+     </i>
+     }
+     @if (header.action === 'delete') {
+     <i class="fas fa-trash text-red-600 cursor-pointer hover:text-red-800" (click)="emitAction('delete', row)">
+     </i>
+     }
+     @if (header.action === 'view') {
+     <i class="fas fa-eye text-gray-500 cursor-pointer hover:text-gray-700" (click)="emitAction('view', row)">
+     </i>
+     }
+    </td>
+    }
+   </tr>
+   }
+   @if (!loading() && data().length === 0) {
+   <tr>
+    <td [attr.colspan]="headers().length" class="text-center py-6 text-gray-500">
+     No records found
+    </td>
+   </tr>
+   }
+  </tbody>
+ </table>
+</div>

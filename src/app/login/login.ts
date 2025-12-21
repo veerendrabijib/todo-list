@@ -3,6 +3,7 @@ import { TextFieldComponent } from '../shared/text-field/text-field';
 import { ButtonComponent } from '../shared/button/button';
 import { ApiManager } from '../utils/api-manager';
 import { Constants } from '../utils/constants';
+import { Router } from '@angular/router';
 
 @Component({
  selector: 'app-login',
@@ -18,7 +19,8 @@ export class LoginComponent {
  });
  postParams = { name: '', email: '', password: '' };
  isLogin: boolean = true;
- private api = inject(ApiManager);
+ private readonly api = inject(ApiManager);
+ private readonly router = inject(Router)
 
  login() {
   if (!this.isValidForm()) return;
@@ -26,6 +28,8 @@ export class LoginComponent {
   this.api.doPost(url, this.postParams).subscribe({
    next: (res: any) => {
     if (res.status) {
+     console.log('Response:', res);
+     this.saveToLocalStorage({ userId: res.userId, name: res.name });
      this.showMessage(res.message || (this.isLogin ? 'Login successful' : 'Sign Up successful'), false);
      if (!this.isLogin) {
       this.navigateToLogin();
@@ -35,7 +39,7 @@ export class LoginComponent {
     }
    },
    error: (err: any) => {
-    this.showMessage(err.error.message || 'Request failed');   
+    this.showMessage(err.error.message || 'Request failed');
    }
   });
  }
@@ -48,7 +52,7 @@ export class LoginComponent {
   this.isLogin = true;
  }
  navigateToDashboard() {
-  // Navigation logic to dashboard goes here
+  this.router.navigateByUrl('/dashboard', { replaceUrl: true });
  }
  isValidForm(): boolean {
   if (!this.postParams.name) {
@@ -65,16 +69,6 @@ export class LoginComponent {
   }
   return true;
  }
- // showMessage(text: string, isError: boolean = true) {
- //  this.message = { status: true, text, isError };
- //  this.className = isError
- //   ? 'text-sm text-red-600 mt-2'
- //   : 'text-sm text-green-600 mt-2';
-
- //  setTimeout(() => {
- //   this.message = { status: false, text: '', isError: true };
- //  }, 2000);
- // }
  showMessage(text: string, isError: boolean = true) {
   this.message.set({ status: true, text, isError });
 
@@ -82,9 +76,10 @@ export class LoginComponent {
    this.message.set({ status: false, text: '', isError: true });
   }, 2000);
  }
-
-
  clearForm() {
   this.postParams = { name: '', email: '', password: '' };
+ }
+ saveToLocalStorage(data: any) {
+  localStorage.setItem('loginData', JSON.stringify(data));
  }
 }

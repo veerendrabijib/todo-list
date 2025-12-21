@@ -6,4 +6,5 @@ import { Injectable } from '@angular/core';
 export class Constants {
  static readonly BASE_URL = 'http://localhost:3000/';
  static readonly LOGIN_ENDPOINT = Constants.BASE_URL + 'login';
+ static readonly TODOS_ENDPOINT = Constants.BASE_URL + 'todos';
 }
