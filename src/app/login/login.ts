@@ -29,7 +29,7 @@ export class LoginComponent {
    next: (res: any) => {
     if (res.status) {
      console.log('Response:', res);
-     this.saveToLocalStorage({ userId: res.userId, name: res.name });
+     this.saveToLocalStorage({ userId: res.userId, name: res.userName });
      this.showMessage(res.message || (this.isLogin ? 'Login successful' : 'Sign Up successful'), false);
      if (!this.isLogin) {
       this.navigateToLogin();
